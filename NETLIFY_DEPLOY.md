@@ -15,19 +15,18 @@ Aapka project **euphonious-mousse-03f8b8** already GitHub se connect hai. Ab sir
 
 ## Step 2: Environment variables (zaroori)
 
-Site load hone ke baad **login/signup** ke liye ye variables set karo:
+Aapke paas already **NETLIFY_DATABASE_URL** (Neon) hai. App ko **DATABASE_URL** chahiye + auth vars.
 
-1. Project → **Site configuration** (ya **Site settings**) → **Environment variables**.
-2. **Add variable** / **Add env var** pe click karo.
-3. Ye **3** add karo:
+1. **Environment variables** page par **Add a variable** pe click karo.
+2. Ye **3** variables add karo:
 
 | Key | Value |
 |-----|--------|
-| `NEXTAUTH_SECRET` | Koi bhi long random string (32+ chars). Example: `my-super-secret-key-12345-change-in-production` |
+| `DATABASE_URL` | **Same value as NETLIFY_DATABASE_URL** – Netlify/Neon wale variable ka value copy karke yahan paste karo (click NETLIFY_DATABASE_URL → reveal/copy). |
+| `NEXTAUTH_SECRET` | Koi bhi 32+ character random string. Example: `my-super-secret-key-12345-change-in-production` |
 | `NEXTAUTH_URL` | Aapki live site URL. Example: `https://euphonious-mousse-03f8b8.netlify.app` |
-| `DATABASE_URL` | Production DB (step 3 dekho) |
 
-4. **Save** karo, phir **Trigger deploy** dobara chalao taake nayi env vars build mein aayein.
+3. **Save** karo, phir **Trigger deploy** dobara chalao.
 
 ---
 
