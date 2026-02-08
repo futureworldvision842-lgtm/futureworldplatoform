@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Globe2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Suspense } from "react";
 
 const errorMessages: Record<string, string> = {
   CredentialsSignin: "Invalid email or password. Please try again.",
@@ -14,7 +15,7 @@ const errorMessages: Record<string, string> = {
   Verification: "The verification link may have expired or already been used.",
 };
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error") || "Default";
   const message = errorMessages[error] || errorMessages.Default;
@@ -50,5 +51,17 @@ export default function AuthErrorPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-cyan-50">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    }>
+      <AuthErrorContent />
+    </Suspense>
   );
 }

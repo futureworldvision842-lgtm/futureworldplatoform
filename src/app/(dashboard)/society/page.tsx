@@ -10,7 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 type Society = {
   id: string;
@@ -42,7 +42,7 @@ type Society = {
 
 type UserSociety = { society: { id: string; name: string; type: string; cityName: string; countryName: string } };
 
-export default function SocietyDashboard() {
+function SocietyDashboardContent() {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -265,5 +265,17 @@ export default function SocietyDashboard() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function SocietyDashboard() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-[200px]">
+        <p className="text-muted-foreground">Loading society...</p>
+      </div>
+    }>
+      <SocietyDashboardContent />
+    </Suspense>
   );
 }

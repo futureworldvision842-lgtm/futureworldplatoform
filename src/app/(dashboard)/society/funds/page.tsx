@@ -1,12 +1,12 @@
 "use client";
 
-import { DollarSign, TrendingUp, TrendingDown, Shield, Eye, Download, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { DollarSign, TrendingUp, TrendingDown, Shield, Download, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const budgetItems = [
   { category: "Infrastructure", allocated: 8000, spent: 5200, color: "bg-blue-500" },
@@ -25,7 +25,7 @@ const transactions = [
   { desc: "Maintenance costs", amount: -350, type: "EXPENSE", hash: "0xij56kl...", date: "Jan 10" },
 ];
 
-export default function SocietyFundsPage() {
+function SocietyFundsContent() {
   const searchParams = useSearchParams();
   const societyId = searchParams.get("societyId");
   const totalBudget = budgetItems.reduce((a, b) => a + b.allocated, 0);
@@ -109,5 +109,13 @@ export default function SocietyFundsPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function SocietyFundsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><p className="text-muted-foreground">Loading...</p></div>}>
+      <SocietyFundsContent />
+    </Suspense>
   );
 }

@@ -1,12 +1,13 @@
 "use client";
 
-import { Bell, Plus, Calendar, Pin, Users } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bell, Plus, Calendar, Pin } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const announcements = [
   { title: "Monthly Community Meeting", content: "Join us this Saturday at 10 AM for our monthly community meeting. Agenda includes solar panel project update and new proposal discussions.", author: "Muhammad Qureshi", date: "2026-02-06", pinned: true, type: "EVENT" },
@@ -15,7 +16,7 @@ const announcements = [
   { title: "Water Supply Disruption", content: "Water supply will be temporarily disrupted on Feb 10 from 10 AM - 4 PM due to maintenance. Please store water accordingly.", author: "Usman Khan", date: "2026-02-01", pinned: true, type: "URGENT" },
 ];
 
-export default function SocietyAnnouncementsPage() {
+function SocietyAnnouncementsContent() {
   const searchParams = useSearchParams();
   const societyId = searchParams.get("societyId");
 
@@ -55,5 +56,13 @@ export default function SocietyAnnouncementsPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function SocietyAnnouncementsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><p className="text-muted-foreground">Loading...</p></div>}>
+      <SocietyAnnouncementsContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, Plus, Search, MoreHorizontal, Shield } from "lucide-react";
+import { Search, MoreHorizontal, Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 type MemberRow = {
   id: string;
@@ -19,7 +19,7 @@ type MemberRow = {
   user: { id: string; name: string; email: string; avatar: string | null; location: string | null };
 };
 
-export default function SocietyMembersPage() {
+function SocietyMembersContent() {
   const searchParams = useSearchParams();
   const societyId = searchParams.get("societyId");
   const { data: session, status } = useSession();
@@ -169,5 +169,13 @@ export default function SocietyMembersPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function SocietyMembersPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><p className="text-muted-foreground">Loading members...</p></div>}>
+      <SocietyMembersContent />
+    </Suspense>
   );
 }

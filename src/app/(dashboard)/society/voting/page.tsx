@@ -1,12 +1,13 @@
 "use client";
 
-import { Vote, Plus, Brain, Shield, Clock } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, Brain, Shield } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const proposals = [
   { title: "Solar Panel Installation", desc: "Install solar panels to reduce electricity costs by 60%", yes: 145, no: 32, abstain: 8, total: 256, status: "ACTIVE", days: 3, aiScore: 8.5 },
@@ -15,7 +16,7 @@ const proposals = [
   { title: "Water Filtration System", desc: "Install clean water filtration for the community", yes: 200, no: 5, abstain: 2, total: 256, status: "APPROVED", days: 0, aiScore: 9.7 },
 ];
 
-export default function SocietyVotingPage() {
+function SocietyVotingContent() {
   const searchParams = useSearchParams();
   const societyId = searchParams.get("societyId");
 
@@ -71,5 +72,13 @@ export default function SocietyVotingPage() {
         })}
       </div>
     </div>
+  );
+}
+
+export default function SocietyVotingPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-[200px]"><p className="text-muted-foreground">Loading...</p></div>}>
+      <SocietyVotingContent />
+    </Suspense>
   );
 }
