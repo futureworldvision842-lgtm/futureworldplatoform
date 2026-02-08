@@ -1,4 +1,5 @@
 @echo off
+REM In PowerShell run as: .\push-to-github.bat  (dot-backslash required)
 cd /d "%~dp0"
 set REPO=https://github.com/futureworldvision842-lgtm/futureworldplatoform.git
 

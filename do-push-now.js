@@ -37,11 +37,11 @@ console.log("Pushing to GitHub...");
 try {
   run("git push -u origin main");
 } catch (_) {
-  console.log("Remote has existing commits. Pulling with --allow-unrelated-histories, then pushing...");
+  console.log("Remote has new commits. Pulling, then pushing again...");
   try {
     run("git pull origin main --allow-unrelated-histories --no-edit");
   } catch (e) {
-    console.error("Pull failed. Run manually: git pull origin main --allow-unrelated-histories --no-edit");
+    console.error("Pull failed. Run: git pull origin main --allow-unrelated-histories --no-edit");
     process.exit(1);
   }
   run("git push -u origin main");

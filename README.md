@@ -25,8 +25,9 @@ Set `NEXTAUTH_SECRET`, `DATABASE_URL` (Postgres/Neon URL), and `GEMINI_API_KEY` 
 
 ## Deploy (GitHub → Netlify 100%)
 
-1. **Push to GitHub:** Double-click `push-to-github.bat` or run `node do-push-now.js`
-2. **Netlify:** Import repo **futureworldplatoform** → set **DATABASE_URL**, **NEXTAUTH_SECRET**, **NEXTAUTH_URL** → Trigger deploy
+**Sab kuch word-by-word chahiye (setup + deploy + login fix)?** → **[SETUP-AND-DEPLOY.md](SETUP-AND-DEPLOY.md)** (yahi se start karo.)
 
-Full steps: **[GITHUB-TO-NETLIFY.md](GITHUB-TO-NETLIFY.md)**  
-Also: [NETLIFY-BABY-STEPS.md](NETLIFY-BABY-STEPS.md), [DEPLOY.md](DEPLOY.md)
+1. **Push to GitHub:** `node do-push-now.js` (PowerShell: `.\push-to-github.bat`)
+2. **Netlify:** Import repo **futureworldplatoform** → set **DATABASE_URL**, **NEXTAUTH_SECRET**, **NEXTAUTH_URL** (no trailing slash) → Trigger deploy
+
+Also: [GITHUB-TO-NETLIFY.md](GITHUB-TO-NETLIFY.md), [LOGIN-FIX-BABY-STEPS.md](LOGIN-FIX-BABY-STEPS.md), [NETLIFY-BABY-STEPS.md](NETLIFY-BABY-STEPS.md), [DEPLOY.md](DEPLOY.md)

@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import prisma from "./prisma";
 
 export const authOptions: NextAuthConfig = {
+  trustHost: true,
   providers: [
     CredentialsProvider({
       name: "credentials",

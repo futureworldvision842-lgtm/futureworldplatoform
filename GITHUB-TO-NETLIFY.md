@@ -7,8 +7,10 @@ Isi order mein karo. Pehle code GitHub par push, phir Netlify par same repo conn
 ## Step 1: Code GitHub par push karo
 
 1. Project folder kholo: `E:\Muhammad's Work VP automation\mq prject\Platform Project`
-2. **Double-click** `push-to-github.bat`  
-   **Ya** terminal mein: `node do-push-now.js`
+2. **Double-click** `push-to-github.bat` (File Explorer se).  
+   **Ya** terminal se:  
+   - **PowerShell** mein: `.\push-to-github.bat` ya `node do-push-now.js`  
+   - **CMD** mein: `push-to-github.bat` ya `node do-push-now.js`
 3. Jab "Done" / "Pushing to GitHub" success dikhe, repo yahan open karo:  
    **https://github.com/futureworldvision842-lgtm/futureworldplatoform**
 4. Latest commit dikh raha ho to Step 2 par jao.
@@ -39,7 +41,7 @@ Ye **3** add karo:
 |-----|--------|
 | `DATABASE_URL` | Neon Postgres connection string. Netlify ne **Neon** add kiya hai to **NETLIFY_DATABASE_URL** ki value **copy** karo (reveal → copy). Wahi value yahan paste karo. Ya Neon dashboard (neon.tech) → Connection string copy karo. |
 | `NEXTAUTH_SECRET` | Koi bhi 32+ character secret. Example: `my-super-secret-key-12345-change-in-production` |
-| `NEXTAUTH_URL` | Aapki live site URL. Example: `https://your-site-name.netlify.app` (Netlify ne jo URL diya hai wahi) |
+| `NEXTAUTH_URL` | Aapki live site URL **bina trailing slash**. Example: `https://futureoworldvision.netlify.app` (end pe `/` mat rakho) |
 
 3. **Save** karo. **Trigger deploy** (Deploys → Trigger deploy → Deploy site) zaroor chalao taake nayi env vars use hon.
 
