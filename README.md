@@ -12,6 +12,9 @@ A governance platform combining blockchain-style transparency, AI (Gemini), and 
 
 ## Run locally
 
+**Windows:** Double-click `run-localhost.bat` (installs deps and starts dev server).
+
+**Or from terminal:**
 ```bash
 npm install
 npm run dev
@@ -20,9 +23,10 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000).  
 Set `NEXTAUTH_SECRET`, `DATABASE_URL` (Postgres/Neon URL), and `GEMINI_API_KEY` in `.env.local` if needed.
 
-## Deploy
+## Deploy (GitHub → Netlify 100%)
 
-- **GitHub:** Run `node do-push-now.js` in the project folder.
-- **Netlify:** See [NETLIFY-BABY-STEPS.md](NETLIFY-BABY-STEPS.md).
+1. **Push to GitHub:** Double-click `push-to-github.bat` or run `node do-push-now.js`
+2. **Netlify:** Import repo **futureworldplatoform** → set **DATABASE_URL**, **NEXTAUTH_SECRET**, **NEXTAUTH_URL** → Trigger deploy
 
-Details: [DEPLOY.md](DEPLOY.md)
+Full steps: **[GITHUB-TO-NETLIFY.md](GITHUB-TO-NETLIFY.md)**  
+Also: [NETLIFY-BABY-STEPS.md](NETLIFY-BABY-STEPS.md), [DEPLOY.md](DEPLOY.md)

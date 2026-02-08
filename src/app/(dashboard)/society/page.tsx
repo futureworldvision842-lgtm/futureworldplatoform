@@ -58,11 +58,12 @@ export default function SocietyDashboard() {
   }, [societyIdParam]);
 
   useEffect(() => {
-    if (status !== "authenticated" || !session?.user?.id) {
+    const userId = (session?.user as { id?: string } | undefined)?.id;
+    if (status !== "authenticated" || !userId) {
       setLoading(false);
       return;
     }
-    fetch(`/api/users?id=${session.user.id}`)
+    fetch(`/api/users?id=${userId}`)
       .then((r) => r.json())
       .then((data) => {
         const list = data?.user?.societyMemberships ?? [];
@@ -72,7 +73,7 @@ export default function SocietyDashboard() {
         if (toLoad) setSelectedId(toLoad);
       })
       .catch(() => setLoading(false));
-  }, [session?.user?.id, status]);
+  }, [session, status]);
 
   useEffect(() => {
     if (!selectedId) {

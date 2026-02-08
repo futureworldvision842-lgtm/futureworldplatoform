@@ -1,5 +1,5 @@
-# Next.js on Netlify – OpenNext adapter auto-configures build output
-# https://docs.netlify.com/build/frameworks/framework-setup-guides/nextjs/overview/
+# Next.js on Netlify – plugin auto-sets publish dir and server
+# Set in Netlify UI: DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL
 
 [build]
   command = "npm run build"

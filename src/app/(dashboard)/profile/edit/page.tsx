@@ -72,7 +72,8 @@ export default function EditProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!(session?.user as any)?.id) return;
+    const userId = (session?.user as { id?: string } | undefined)?.id;
+    if (!userId) return;
     setSaving(true);
     setError("");
     try {
@@ -80,7 +81,7 @@ export default function EditProfilePage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: (session.user as any).id,
+          id: userId,
           name,
           bio,
           phone,

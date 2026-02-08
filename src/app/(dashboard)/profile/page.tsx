@@ -40,11 +40,11 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (status !== "authenticated" || !(session?.user as any)?.id) {
+    const userId = (session?.user as { id?: string } | undefined)?.id;
+    if (status !== "authenticated" || !userId) {
       setLoading(status === "loading");
       return;
     }
-    const userId = (session.user as any).id;
     fetch(`/api/users?id=${userId}`)
       .then((res) => res.json())
       .then((data) => {
