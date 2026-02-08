@@ -2,6 +2,14 @@
 
 ---
 
+## ⚠️ Agar "New environment variable" screen par ho (Key = DATABASE_URL)
+
+- **Value** box mein **NETLIFY_DATABASE_URL** mat chhodna – ye sirf variable ka naam hai, connection string nahi.
+- **Cancel** dabao → Environment variables list par jao → **NETLIFY_DATABASE_URL** pe click karo → value **reveal** karke **copy** karo (postgresql://... wali string).
+- Phir dubara **Add a variable** → Key = `DATABASE_URL`, Value = **jo abhi copy kiya woh paste** karo → **Create variable**.
+
+---
+
 ## Part 1: Pehle code GitHub par bhejo
 
 1. Cursor ya terminal kholo.
@@ -18,18 +26,28 @@
 
 ### Variable 1 – DATABASE_URL
 
-1. Browser mein jao: **https://app.netlify.com**
-2. Apna site **euphonious-mousse-03f8b8** kholo (click karo).
-3. Left side se **Site configuration** pe click karo.
-4. **Environment variables** pe click karo.
-5. **"Add a variable"** / **"Add variable"** button pe click karo (teal/green button).
-6. **"Add a single variable"** choose karo (agar option aaye).
-7. **Key** box mein ye likho (copy-paste):
+**Important:** Value box mein **sirf word "NETLIFY_DATABASE_URL" mat likhna.** Wahan **actual connection string** (postgresql://...) paste karni hai. Neeche step-by-step hai.
+
+1. **Pehle value copy karo**  
+   - **Environment variables** list mein **NETLIFY_DATABASE_URL** wale variable pe click karo.  
+   - Value **reveal** karo (••• ke paas eye icon ya "Options" → "Reveal").  
+   - Puri value **copy** karo (woh `postgresql://...` jaisi long string).  
+   - Copy ho gayi? Ab neeche wala form bharo.
+
+2. **Naya variable banao**  
+   - **"Add a variable"** pe click karo → **"Add a single variable"** (agar aaye).  
+   - **Key** box: sirf ye likho (copy-paste):
    ```
    DATABASE_URL
    ```
-8. **Value** ke liye: upar jo **NETLIFY_DATABASE_URL** dikh raha hai, us par click karo → **Options** / **Edit** → value **copy** karo (reveal karke). Wahi value **DATABASE_URL** ki **Value** box mein **paste** karo.
-9. **Save** / **Create variable** pe click karo.
+   - **Values** wale section mein jo box hai (jahan ab "NETLIFY_DATABASE_URL" likha ho sakta hai):  
+     - Us box ko **clear** karo.  
+     - Ab jo **NETLIFY_DATABASE_URL** ki value copy ki thi (postgresql://... wali), **sirf woh** yahan **paste** karo.  
+   - **Scopes:** "All scopes" hi rehne do.  
+   - **Secret:** chaaho to "Contains secret values" check kar do (value hide ho jayegi).  
+   - Last mein **"Create variable"** pe click karo.
+
+Agar NETLIFY_DATABASE_URL ki value kahin se copy na ho paaye, to **Neon** dashboard (neon.tech) → apna project → **Connection string** se bhi copy kar sakte ho.
 
 ### Variable 2 – NEXTAUTH_SECRET
 

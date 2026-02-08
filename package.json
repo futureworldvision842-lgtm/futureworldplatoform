@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node scripts/clear-cache.js && next dev",
     "launch": "node scripts/clear-cache.js && next dev",
-    "build": "prisma generate && prisma db push && next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "clear-cache": "node scripts/clear-cache.js",

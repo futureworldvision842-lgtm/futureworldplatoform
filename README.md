@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Future World Platform – Global AI Governance System
 
 **By Muhammad Qureshi**
@@ -8,7 +7,7 @@ A governance platform combining blockchain-style transparency, AI (Gemini), and 
 ## Tech
 
 - **Next.js 14** (App Router), **TypeScript**, **Tailwind CSS**, **shadcn/ui**
-- **NextAuth v5** (credentials), **Prisma** (SQLite dev; use Postgres/Supabase for production)
+- **NextAuth v5** (credentials), **Prisma** (PostgreSQL / Neon)
 - **Google Gemini** for AI features
 
 ## Run locally
@@ -19,15 +18,11 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).  
-First run: copy `.env.example` to `.env.local` and set `NEXTAUTH_SECRET`, `DATABASE_URL`, and `GEMINI_API_KEY` if needed.
+Set `NEXTAUTH_SECRET`, `DATABASE_URL` (Postgres/Neon URL), and `GEMINI_API_KEY` in `.env.local` if needed.
 
 ## Deploy
 
-- **GitHub:** Run `push-to-github.bat` in the project folder (or see [DEPLOY.md](DEPLOY.md)).
-- **Netlify:** [Deploy this repo to Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/futureworldvision842-lgtm/futureworldplatoform) and set `NEXTAUTH_SECRET` and `NEXTAUTH_URL` in environment variables.
+- **GitHub:** Run `node do-push-now.js` in the project folder.
+- **Netlify:** See [NETLIFY-BABY-STEPS.md](NETLIFY-BABY-STEPS.md).
 
 Details: [DEPLOY.md](DEPLOY.md)
-=======
-# futureworldplatoform
-Global Ai Governance system by Muhammad Qureshi
->>>>>>> a70ee15a6822112ccec8085d8910be76d5658628
