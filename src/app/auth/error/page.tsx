@@ -10,7 +10,7 @@ import { Suspense } from "react";
 const errorMessages: Record<string, string> = {
   CredentialsSignin: "Invalid email or password. Please try again.",
   Default: "Something went wrong during sign in. Please try again.",
-  Configuration: "There is a problem with the server configuration.",
+  Configuration: "Server or database configuration issue. Check DATABASE_URL and NEXTAUTH_SECRET on your host (e.g. Netlify).",
   AccessDenied: "Access denied. You do not have permission to sign in.",
   Verification: "The verification link may have expired or already been used.",
 };

@@ -3,6 +3,9 @@ import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { registerSchema } from "@/lib/validators";
 
+// Force Node runtime so bcrypt + Prisma work on Netlify
+export const runtime = "nodejs";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

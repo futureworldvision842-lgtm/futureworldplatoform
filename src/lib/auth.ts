@@ -12,11 +12,10 @@ export const authOptions: NextAuthConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
         try {
-          if (!credentials?.email || !credentials?.password) {
-            return null;
-          }
-
           const user = await prisma.user.findUnique({
             where: { email: (credentials.email as string).trim().toLowerCase() },
           });
@@ -43,7 +42,8 @@ export const authOptions: NextAuthConfig = {
           };
         } catch (err) {
           console.error("Auth authorize error:", err);
-          return null;
+          // DB or server config failure — show Configuration error on auth/error page
+          throw new Error("Configuration");
         }
       },
     }),
