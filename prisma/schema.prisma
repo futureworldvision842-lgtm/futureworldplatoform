@@ -1,0 +1,373 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER & AUTHENTICATION
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  password      String
+  avatar        String?
+  bio           String?
+  phone         String?
+  location      String?   // City, Country e.g. "Islamabad, Pakistan"
+  skills        String    @default("[]") // JSON array stored as string
+  role          String    @default("USER") // USER, SOCIETY_ADMIN, CITY_ADMIN, COUNTRY_ADMIN, GLOBAL_ADMIN, SUPER_ADMIN
+  verified      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  wallets           Wallet[]
+  posts             Post[]
+  votes             Vote[]
+  sentTransactions  Transaction[]  @relation("SentTransactions")
+  receivedTransactions Transaction[] @relation("ReceivedTransactions")
+  proposals         Proposal[]     @relation("CreatedProposals")
+  businesses        Business[]
+  services          Service[]
+  serviceRequests   ServiceRequest[]
+  donations         Donation[]
+  notifications     Notification[]
+  aiConversations   AIConversation[]
+
+  // Society membership
+  societyMemberships SocietyMember[]
+  adminOfSociety     Society?       @relation("SocietyAdmin")
+  adminOfCity        City?          @relation("CityAdmin")
+  adminOfCountry     Country?       @relation("CountryAdmin")
+
+  // Groups/Teams
+  teamMemberships    TeamMember[]
+  createdTeams       Team[]        @relation("TeamCreator")
+
+  // Comments
+  comments          Comment[]
+}
+
+// ============================================
+// GOVERNANCE HIERARCHY
+// ============================================
+
+model Society {
+  id            String    @id @default(cuid())
+  name          String
+  type          String    @default("COMMUNITY") // MOSQUE, CHURCH, TEMPLE, COMMUNITY, OTHER
+  description   String    @default("")
+  address       String    @default("")
+  cityName      String    @default("")
+  countryName   String    @default("")
+  latitude      Float?
+  longitude     Float?
+  fundsBalance  Float     @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  adminId       String    @unique
+  admin         User      @relation("SocietyAdmin", fields: [adminId], references: [id])
+  members       SocietyMember[]
+  proposals     Proposal[]
+  posts         Post[]
+  cityRef       City?     @relation(fields: [cityId], references: [id])
+  cityId        String?
+  wallets       Wallet[]
+  teams         Team[]
+}
+
+model SocietyMember {
+  id        String   @id @default(cuid())
+  role      String   @default("MEMBER") // MEMBER, MODERATOR
+  joinedAt  DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  societyId String
+  society   Society  @relation(fields: [societyId], references: [id])
+
+  @@unique([userId, societyId])
+}
+
+// Groups/Teams within or across societies
+model Team {
+  id          String    @id @default(cuid())
+  name        String
+  description String    @default("")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  createdById String
+  createdBy   User      @relation("TeamCreator", fields: [createdById], references: [id])
+  societyId   String?   // optional: team can be under a society
+  society     Society?  @relation(fields: [societyId], references: [id])
+  members     TeamMember[]
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  role      String   @default("MEMBER") // MEMBER, LEADER
+  joinedAt  DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id])
+
+  @@unique([userId, teamId])
+}
+
+model City {
+  id            String    @id @default(cuid())
+  name          String
+  countryName   String    @default("")
+  population    Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  adminId       String    @unique
+  admin         User      @relation("CityAdmin", fields: [adminId], references: [id])
+  societies     Society[]
+  proposals     Proposal[]
+  countryRef    Country?  @relation(fields: [countryId], references: [id])
+  countryId     String?
+}
+
+model Country {
+  id            String    @id @default(cuid())
+  name          String
+  code          String    @unique
+  population    Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  adminId       String    @unique
+  admin         User      @relation("CountryAdmin", fields: [adminId], references: [id])
+  cities        City[]
+  proposals     Proposal[]
+}
+
+// ============================================
+// GOVERNANCE - VOTING & PROPOSALS
+// ============================================
+
+model Proposal {
+  id            String    @id @default(cuid())
+  title         String
+  description   String
+  level         String    @default("SOCIETY") // SOCIETY, CITY, COUNTRY, GLOBAL
+  status        String    @default("ACTIVE")  // DRAFT, ACTIVE, CLOSED, APPROVED, REJECTED
+  aiAnalysis    String?
+  yesVotes      Int       @default(0)
+  noVotes       Int       @default(0)
+  abstainVotes  Int       @default(0)
+  startDate     DateTime  @default(now())
+  endDate       DateTime
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  createdById   String
+  createdBy     User      @relation("CreatedProposals", fields: [createdById], references: [id])
+  societyId     String?
+  society       Society?  @relation(fields: [societyId], references: [id])
+  cityId        String?
+  city          City?     @relation(fields: [cityId], references: [id])
+  countryId     String?
+  country       Country?  @relation(fields: [countryId], references: [id])
+
+  votes         Vote[]
+}
+
+model Vote {
+  id              String    @id @default(cuid())
+  choice          String    // YES, NO, ABSTAIN
+  blockchainHash  String    @unique
+  createdAt       DateTime  @default(now())
+
+  proposalId      String
+  proposal        Proposal  @relation(fields: [proposalId], references: [id])
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+
+  @@unique([proposalId, userId])
+}
+
+// ============================================
+// FINANCE & TRANSACTIONS
+// ============================================
+
+model Wallet {
+  id        String    @id @default(cuid())
+  balance   Float     @default(0)
+  currency  String    @default("USD")
+  type      String    @default("PERSONAL") // PERSONAL, BUSINESS, SOCIETY
+  createdAt DateTime  @default(now())
+
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id])
+  societyId String?
+  society   Society?  @relation(fields: [societyId], references: [id])
+}
+
+model Transaction {
+  id              String    @id @default(cuid())
+  amount          Float
+  type            String    // TRANSFER, DONATION, PAYMENT, TAX, REFUND, SALARY
+  description     String    @default("")
+  blockchainHash  String    @unique
+  verified        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+
+  fromUserId      String
+  fromUser        User      @relation("SentTransactions", fields: [fromUserId], references: [id])
+  toUserId        String
+  toUser          User      @relation("ReceivedTransactions", fields: [toUserId], references: [id])
+}
+
+// ============================================
+// SOCIAL & COMMUNITY
+// ============================================
+
+model Post {
+  id            String    @id @default(cuid())
+  content       String
+  type          String    @default("DISCUSSION") // DISCUSSION, ANNOUNCEMENT, ISSUE, IDEA, EVENT
+  likes         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  authorId      String
+  author        User      @relation(fields: [authorId], references: [id])
+  societyId     String?
+  society       Society?  @relation(fields: [societyId], references: [id])
+  comments      Comment[]
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  content   String
+  createdAt DateTime  @default(now())
+
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [id])
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id])
+}
+
+// ============================================
+// MARKETPLACE & SERVICES
+// ============================================
+
+model Business {
+  id          String    @id @default(cuid())
+  name        String
+  description String    @default("")
+  category    String    @default("")
+  verified    Boolean   @default(false)
+  rating      Float     @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  ownerId     String
+  owner       User      @relation(fields: [ownerId], references: [id])
+  services    Service[]
+}
+
+model Service {
+  id          String    @id @default(cuid())
+  title       String
+  description String    @default("")
+  price       Float     @default(0)
+  category    String    @default("")
+  location    String    @default("")
+  status      String    @default("ACTIVE") // ACTIVE, PAUSED, COMPLETED, CANCELLED
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  providerId  String
+  provider    User      @relation(fields: [providerId], references: [id])
+  businessId  String?
+  business    Business? @relation(fields: [businessId], references: [id])
+}
+
+model ServiceRequest {
+  id          String    @id @default(cuid())
+  title       String
+  description String    @default("")
+  budget      Float     @default(0)
+  location    String    @default("")
+  status      String    @default("OPEN") // OPEN, IN_PROGRESS, COMPLETED, CANCELLED
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  requesterId String
+  requester   User      @relation(fields: [requesterId], references: [id])
+}
+
+// ============================================
+// DONATIONS & CAMPAIGNS
+// ============================================
+
+model DonationCampaign {
+  id            String    @id @default(cuid())
+  title         String
+  description   String    @default("")
+  targetAmount  Float     @default(0)
+  raisedAmount  Float     @default(0)
+  level         String    @default("SOCIETY") // SOCIETY, CITY, COUNTRY, GLOBAL
+  status        String    @default("ACTIVE")  // ACTIVE, COMPLETED, PAUSED, CANCELLED
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  donations     Donation[]
+}
+
+model Donation {
+  id          String    @id @default(cuid())
+  amount      Float
+  message     String    @default("")
+  verified    Boolean   @default(true)
+  blockchainHash String @default("")
+  createdAt   DateTime  @default(now())
+
+  donorId     String
+  donor       User      @relation(fields: [donorId], references: [id])
+  campaignId  String
+  campaign    DonationCampaign @relation(fields: [campaignId], references: [id])
+}
+
+// ============================================
+// AI & NOTIFICATIONS
+// ============================================
+
+model AIConversation {
+  id        String    @id @default(cuid())
+  messages  String    @default("[]") // JSON array stored as string
+  context   String    @default("")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  title     String
+  message   String
+  type      String    @default("SYSTEM") // VOTE, TRANSACTION, ANNOUNCEMENT, SYSTEM, AI_INSIGHT, DONATION, SERVICE
+  read      Boolean   @default(false)
+  link      String?
+  createdAt DateTime  @default(now())
+
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+}
