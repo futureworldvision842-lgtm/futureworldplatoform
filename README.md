@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Future World Platform – Global AI Governance System
 
 **By Muhammad Qureshi**
@@ -26,3 +27,7 @@ First run: copy `.env.example` to `.env.local` and set `NEXTAUTH_SECRET`, `DATAB
 - **Netlify:** [Deploy this repo to Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/futureworldvision842-lgtm/futureworldplatoform) and set `NEXTAUTH_SECRET` and `NEXTAUTH_URL` in environment variables.
 
 Details: [DEPLOY.md](DEPLOY.md)
+=======
+# futureworldplatoform
+Global Ai Governance system by Muhammad Qureshi
+>>>>>>> a70ee15a6822112ccec8085d8910be76d5658628
