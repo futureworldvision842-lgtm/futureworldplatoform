@@ -10,7 +10,7 @@ import { Suspense } from "react";
 const errorMessages: Record<string, string> = {
   CredentialsSignin: "Invalid email or password. Please try again.",
   Default: "Something went wrong during sign in. Please try again.",
-  Configuration: "Server or database configuration issue. Check DATABASE_URL and NEXTAUTH_SECRET on your host (e.g. Netlify).",
+  Configuration: "Database not connected. In your project folder: add DATABASE_URL=postgresql://... to .env, then run: npx prisma db push. See LOCAL-SETUP.md.",
   AccessDenied: "Access denied. You do not have permission to sign in.",
   Verification: "The verification link may have expired or already been used.",
 };

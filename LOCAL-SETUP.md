@@ -49,6 +49,9 @@ npx prisma db push
 
 If you see *"URL must start with the protocol postgresql://"*, your `.env` is missing or `DATABASE_URL` is wrong. Fix it and run again.
 
+**If you see *"EPERM: operation not permitted, rename ... query_engine-windows.dll.node"*:**  
+Something is locking the Prisma engine file (Cursor, Node, antivirus). Use **fix-prisma.bat**: close Cursor and all terminals, then right‑click **fix-prisma.bat** → **Run as administrator**. It removes the old client and runs `prisma generate`. After that, **launch-localhost.bat** will skip generate when the client already exists and start the dev server.
+
 ---
 
 ## Step 3: Start the app
@@ -62,3 +65,9 @@ Open **http://localhost:3000**. Register, log in, and test.
 ---
 
 **Summary:** Create `.env` with a valid `postgresql://` **DATABASE_URL**, then `npx prisma generate` and `npx prisma db push`, then `npm run dev`.
+
+---
+
+### If you see 404s for `/api/auth/session` or `_next/static/...` or "Can't resolve vendor-chunks"
+
+The Next.js cache can get out of sync (e.g. after a full reload or interrupted build). **Stop the dev server (Ctrl+C)**, then run `npm run dev` again — the script clears `.next` and `node_modules/.cache` before starting. If it still happens, manually delete the `.next` folder in the project root and run `npm run dev`.

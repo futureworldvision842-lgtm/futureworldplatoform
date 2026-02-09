@@ -1,8 +1,11 @@
-# Next.js on Netlify – plugin auto-sets publish dir and server
-# Set in Netlify UI: DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL
+# Next.js on Netlify – plugin handles runtime (SSR, API, auth)
+# Set in Netlify UI: DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL (your site URL, no slash at end)
 
 [build]
   command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

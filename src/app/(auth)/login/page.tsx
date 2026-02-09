@@ -31,7 +31,13 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError(result.error === "CredentialsSignin" ? "Invalid email or password." : result.error);
+        const msg =
+          result.error === "CredentialsSignin"
+            ? "Invalid email or password."
+            : result.error === "Configuration"
+              ? "Database not connected. In project folder: set DATABASE_URL in .env (postgresql://...), then run: npx prisma db push"
+              : result.error;
+        setError(msg);
         return;
       }
       if (result?.ok !== false) {

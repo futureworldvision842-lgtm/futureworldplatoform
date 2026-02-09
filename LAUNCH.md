@@ -6,7 +6,10 @@
 
 ## 1. Local finalize (your machine)
 
-In the project folder:
+**Option A — One-click (Windows):**  
+Double-click **`launch-localhost.bat`** in the project folder. It runs Prisma generate, db push, then `npm run dev`. If db push fails (no DATABASE_URL), you can still continue to start the dev server for UI testing.
+
+**Option B — Manual (project folder):**
 
 ```bash
 # 1) Ensure .env has valid DATABASE_URL (postgresql://... from Neon/Netlify)

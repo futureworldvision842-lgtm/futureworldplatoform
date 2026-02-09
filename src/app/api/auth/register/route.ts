@@ -71,9 +71,14 @@ export async function POST(req: NextRequest) {
       );
     }
     console.error("Registration error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    const isDbError =
+      error?.code === "P1001" ||
+      error?.code === "P1002" ||
+      error?.code === "P1017" ||
+      error?.message?.includes("Can't reach database");
+    const message = isDbError
+      ? "Database unavailable. Check .env has DATABASE_URL=postgresql://... and run: npx prisma db push"
+      : "Internal server error";
+    return NextResponse.json({ error: message }, { status: isDbError ? 503 : 500 });
   }
 }
