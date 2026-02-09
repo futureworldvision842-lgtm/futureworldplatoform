@@ -11,6 +11,7 @@ async function main() {
   await prisma.vote.deleteMany();
   await prisma.proposal.deleteMany();
   await prisma.post.deleteMany();
+  await prisma.societyJoinRequest.deleteMany();
   await prisma.societyMember.deleteMany();
   await prisma.society.deleteMany();
 
@@ -205,7 +206,7 @@ async function main() {
         fundsBalance: s.fundsBalance,
         adminId: s.adminId,
         members: {
-          create: s.memberUserIds.map((uid) => ({ userId: uid, role: uid === s.adminId ? "ADMIN" : "MEMBER" })),
+          create: s.memberUserIds.map((uid) => ({ userId: uid, role: uid === s.adminId ? "MODERATOR" : "MEMBER" })),
         },
         proposals: {
           create: {

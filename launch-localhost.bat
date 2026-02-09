@@ -6,7 +6,7 @@ echo  G.A.I.G.S. - Launch on localhost
 echo ========================================
 echo.
 
-echo [1/3] Prisma client...
+echo [1/4] Prisma client...
 if exist "node_modules\.prisma\client\index.js" (
   echo Prisma client already present, skipping generate.
 ) else (
@@ -23,20 +23,24 @@ if exist "node_modules\.prisma\client\index.js" (
 )
 echo.
 
-echo [2/3] Prisma db push (needs DATABASE_URL in .env)...
+echo [2/4] Prisma db push (needs DATABASE_URL in .env)...
 call npx prisma db push
 if errorlevel 1 (
   echo.
-  echo db push failed. Check .env has DATABASE_URL=postgresql://...
+  echo db push failed. Check .env and .env.local have DATABASE_URL=postgresql://...
   echo See LOCAL-SETUP.md. You can still run dev without DB for UI test.
   echo.
   set /p cont="Continue to start dev server anyway? (y/n): "
-  if /i not "%cont%"=="y" exit /b 1
+  if /i not "!cont!"=="y" exit /b 1
+) else (
+  echo [3/4] Seeding demo accounts...
+  call npx prisma db seed
+  if errorlevel 1 echo Seed failed - you can still run dev. Demo accounts see DEMO-ACCOUNTS.md.
 )
 echo.
 
-echo [3/3] Starting dev server...
-echo Open http://localhost:3000 when ready. Press Ctrl+C to stop.
+echo [4/4] Starting dev server...
+echo Open http://localhost:3000 - Demo: admin@gaigs.com / password123 (see DEMO-ACCOUNTS.md)
 echo.
 call npm run dev
 pause

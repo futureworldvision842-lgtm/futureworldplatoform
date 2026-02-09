@@ -1,6 +1,7 @@
 # Netlify Site Open Nahi Ho Rahi? (Fix)
 
-Jab bhi GitHub push karo, Netlify nayi deploy lagata hai. Agar site open nahi ho rahi (blank / error), ye steps follow karo.
+**Yaad rahe: pehle localhost par test karo, jab sab theek ho tab hi push karo.**  
+Jab push karo tab Netlify nayi deploy lagata hai. Agar site open nahi ho rahi (blank / error), ye steps follow karo.
 
 ---
 

@@ -1,10 +1,11 @@
 # G.A.I.G.S. Platform — Launch Checklist
 
-**Full upgrade plan (Phases 0–7) is implemented.** Use this checklist to finalize and launch.
+**Full upgrade plan (Phases 0–7) is implemented.**  
+**Pehle localhost par test karo. Jab sab theek ho, tab GitHub push / Netlify deploy karo.**
 
 ---
 
-## 1. Local finalize (your machine)
+## 1. Local test (pehle yahi karo)
 
 **Option A — One-click (Windows):**  
 Double-click **`launch-localhost.bat`** in the project folder. It runs Prisma generate, db push, then `npm run dev`. If db push fails (no DATABASE_URL), you can still continue to start the dev server for UI testing.
@@ -29,7 +30,9 @@ npm run dev
 
 ---
 
-## 2. Push to GitHub
+## 2. Push to GitHub (sirf jab localhost test pass ho jaye)
+
+Jab localhost par register, login, dashboard sab theek chal raha ho, **tab** push karo:
 
 ```bash
 node do-push-now.js
@@ -41,7 +44,7 @@ Repo: **https://github.com/futureworldvision842-lgtm/futureworldplatoform**
 
 ---
 
-## 3. Netlify deploy
+## 3. Netlify deploy (push ke baad)
 
 1. **Site** → **Environment variables** — ensure these are set:
    - `DATABASE_URL` = your Postgres connection string (e.g. from Neon)

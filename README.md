@@ -23,9 +23,9 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000).  
 **Prisma needs `.env`** (not only `.env.local`) with `DATABASE_URL=postgresql://...`. See [LOCAL-SETUP.md](LOCAL-SETUP.md). Set `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, and optionally `GEMINI_API_KEY`.
 
-## Launch (finalize and go live)
+## Launch
 
-**Full plan implemented.** → **[LAUNCH.md](LAUNCH.md)** for the complete launch checklist (local → GitHub → Netlify → test).
+**Pehle localhost par test, phir push.** → **[LAUNCH.md](LAUNCH.md)** — local test steps first, then GitHub push & Netlify when ready.
 
 ## Deploy (GitHub → Netlify 100%)
 

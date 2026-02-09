@@ -26,7 +26,6 @@ const nextConfig = {
           '**/node_modules/**',
           '**/.git/**',
           '**/System Volume Information/**',
-          /System Volume Information/,
         ],
       };
     }
