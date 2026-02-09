@@ -30,6 +30,8 @@ export default function EditProfilePage() {
   const [bio, setBio] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
+  const [address, setAddress] = useState("");
+  const [cnic, setCnic] = useState("");
   const [skills, setSkills] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState("");
 
@@ -52,6 +54,8 @@ export default function EditProfilePage() {
         setBio(data.user.bio || "");
         setPhone(data.user.phone || "");
         setLocation(data.user.location || "");
+        setAddress(data.user.address || "");
+        setCnic(data.user.cnic || "");
         setSkills(parseSkills(data.user.skills || "[]"));
       })
       .catch(() => setError("Failed to load profile"))
@@ -86,6 +90,8 @@ export default function EditProfilePage() {
           bio,
           phone,
           location,
+          address,
+          cnic,
           skills,
         }),
       });
@@ -177,6 +183,29 @@ export default function EditProfilePage() {
               />
               <p className="text-xs text-muted-foreground">
                 Your location helps you join societies and teams in your area.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="address">Address / Home</Label>
+              <Input
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Street, area, city"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cnic">CNIC / National ID</Label>
+              <Input
+                id="cnic"
+                value={cnic}
+                onChange={(e) => setCnic(e.target.value)}
+                placeholder="e.g. 35201-1234567-1"
+              />
+              <p className="text-xs text-muted-foreground">
+                Required for society join requests and service provider registration.
               </p>
             </div>
 

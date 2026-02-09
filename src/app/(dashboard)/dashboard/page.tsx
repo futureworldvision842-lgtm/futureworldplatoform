@@ -13,10 +13,10 @@ import {
   Shield,
   Activity,
   DollarSign,
-  Sparkles,
   BookOpen,
   Zap,
   Heart,
+  Gamepad2,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -283,6 +283,26 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Game — Coming Soon */}
+      <Card className="border-dashed border-2 border-primary/30 bg-muted/30">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
+              <Gamepad2 className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <CardTitle className="text-lg flex items-center gap-2">
+                Governance & Science Game
+                <span className="text-xs font-normal px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">Coming soon</span>
+              </CardTitle>
+              <CardDescription>
+                Play to explore real-world scientific and governance solutions. Learn how decisions at society, city, country, and global levels work — and contribute to real solutions through interactive scenarios. Launching soon.
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
 
       {/* Governance Overview */}
       <Card>

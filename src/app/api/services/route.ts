@@ -1,17 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-// GET - Fetch services
+// GET - Fetch services (optionally filter by societyId; when societyId given, only approved by default)
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category");
+    const societyId = searchParams.get("societyId");
+    const approvedOnly = searchParams.get("approvedOnly") !== "false";
+
+    const where: { status: string; category?: string; societyId?: string | null; approvedBySociety?: boolean } = {
+      status: "ACTIVE",
+      ...(category ? { category } : {}),
+    };
+    if (societyId) {
+      where.societyId = societyId;
+      if (approvedOnly) where.approvedBySociety = true;
+    }
 
     const services = await prisma.service.findMany({
-      where: {
-        status: "ACTIVE",
-        ...(category ? { category } : {}),
-      },
+      where,
       include: {
         provider: { select: { id: true, name: true, avatar: true } },
         business: { select: { id: true, name: true } },
@@ -26,11 +34,11 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST - Create service
+// POST - Create service (optional societyId: list in society pending approval)
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { title, description, price, category, location, providerId, businessId } = body;
+    const { title, description, price, category, location, providerId, businessId, societyId } = body;
 
     const service = await prisma.service.create({
       data: {
@@ -41,6 +49,7 @@ export async function POST(req: NextRequest) {
         location,
         providerId,
         businessId,
+        ...(societyId ? { societyId, approvedBySociety: false } : {}),
       },
     });
 

@@ -48,6 +48,7 @@ const userMenuItems = [
 const societyMenuItems = [
   { label: "Society Dashboard", href: "/society", icon: Building },
   { label: "Browse by Location", href: "/society/browse", icon: MapPin },
+  { label: "Join Requests", href: "/society/join-requests", icon: Users },
   { label: "Members", href: "/society/members", icon: Users },
   { label: "Society Voting", href: "/society/voting", icon: Vote },
   { label: "Funds", href: "/society/funds", icon: DollarSign },

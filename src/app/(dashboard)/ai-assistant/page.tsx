@@ -6,17 +6,16 @@ import {
   Send,
   User,
   Bot,
-  Sparkles,
   Lightbulb,
   Shield,
   BarChart3,
   FileText,
   Loader2,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface Message {
@@ -28,6 +27,7 @@ interface Message {
 
 const quickPrompts = [
   { label: "Analyze a policy", icon: FileText, prompt: "I'd like you to analyze a governance policy proposal." },
+  { label: "Suggest solutions", icon: Lightbulb, prompt: "I have a governance or community problem. Please suggest practical solutions." },
   { label: "Corruption check", icon: Shield, prompt: "Help me check for potential corruption in recent transactions." },
   { label: "Governance insights", icon: BarChart3, prompt: "What insights can you provide about current governance metrics?" },
   { label: "Community advice", icon: Lightbulb, prompt: "Give me advice on improving community engagement and participation." },
@@ -45,7 +45,29 @@ export default function AIAssistantPage() {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [problemText, setProblemText] = useState("");
+  const [suggestions, setSuggestions] = useState<string | null>(null);
+  const [suggestLoading, setSuggestLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const fetchSuggestions = async () => {
+    if (!problemText.trim()) return;
+    setSuggestLoading(true);
+    setSuggestions(null);
+    try {
+      const res = await fetch("/api/ai/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ problem: problemText }),
+      });
+      const data = await res.json();
+      setSuggestions(data.suggestions || "No suggestions returned.");
+    } catch {
+      setSuggestions("Failed to get suggestions.");
+    } finally {
+      setSuggestLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -111,7 +133,7 @@ export default function AIAssistantPage() {
           </div>
           <div>
             <h1 className="text-xl font-bold">AI Governance Assistant</h1>
-            <p className="text-sm text-muted-foreground">Powered by Google Gemini Pro</p>
+            <p className="text-sm text-muted-foreground">Powered by Google Gemini</p>
           </div>
         </div>
         <div className="flex items-center gap-1 text-sm text-green-600">
@@ -119,6 +141,30 @@ export default function AIAssistantPage() {
           Online
         </div>
       </div>
+
+      {/* Problem → Solutions */}
+      <Card className="mb-4 border-primary/20">
+        <CardContent className="p-4">
+          <h3 className="font-semibold flex items-center gap-2 mb-2">
+            <Lightbulb className="w-4 h-4 text-amber-500" />
+            Get AI solutions for any problem
+          </h3>
+          <p className="text-sm text-muted-foreground mb-3">Describe a governance or community problem and get actionable solutions.</p>
+          <Textarea
+            placeholder="e.g. Low voter turnout in society proposals..."
+            value={problemText}
+            onChange={(e) => setProblemText(e.target.value)}
+            className="mb-2 min-h-[80px]"
+            disabled={suggestLoading}
+          />
+          <Button onClick={fetchSuggestions} disabled={!problemText.trim() || suggestLoading} size="sm">
+            {suggestLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Get suggestions"}
+          </Button>
+          {suggestions && (
+            <div className="mt-4 p-3 rounded-lg bg-muted text-sm whitespace-pre-wrap">{suggestions}</div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Chat Area */}
       <Card className="flex-1 flex flex-col overflow-hidden">

@@ -15,6 +15,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [cnic, setCnic] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +30,7 @@ export default function RegisterPage() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, phone }),
+        body: JSON.stringify({ name, email, password, phone, address: address || undefined, cnic: cnic || undefined }),
       });
 
       const data = await res.json();
@@ -99,6 +101,26 @@ export default function RegisterPage() {
                 placeholder="+92 333 1234567"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="address">Address / Home (Optional)</Label>
+              <Input
+                id="address"
+                type="text"
+                placeholder="Street, city, country"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="cnic">CNIC / National ID (Optional)</Label>
+              <Input
+                id="cnic"
+                type="text"
+                placeholder="e.g. 35201-1234567-1"
+                value={cnic}
+                onChange={(e) => setCnic(e.target.value)}
               />
             </div>
             <div className="space-y-2">

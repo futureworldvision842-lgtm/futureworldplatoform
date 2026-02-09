@@ -11,29 +11,37 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const validatedData = registerSchema.parse(body);
     const email = validatedData.email.trim().toLowerCase();
+    const cnic = validatedData.cnic?.trim() || null;
 
-    // Check if user exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
-
     if (existingUser) {
       return NextResponse.json(
         { error: "User with this email already exists" },
         { status: 400 }
       );
     }
+    if (cnic) {
+      const existingCnic = await prisma.user.findUnique({ where: { cnic } });
+      if (existingCnic) {
+        return NextResponse.json(
+          { error: "This CNIC is already registered" },
+          { status: 400 }
+        );
+      }
+    }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 12);
 
-    // Create user with blockchain-ready wallet
     const user = await prisma.user.create({
       data: {
         name: validatedData.name.trim(),
         email,
         password: hashedPassword,
         phone: validatedData.phone?.trim() || null,
+        address: validatedData.address?.trim() || null,
+        cnic: cnic || null,
         wallets: {
           create: {
             balance: 1000, // Starting balance for demo

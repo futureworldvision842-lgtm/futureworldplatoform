@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Building, Users, Vote, DollarSign, Bell, Shield, MessageSquare,
+  Building, Users, UserPlus, Vote, DollarSign, Bell, Shield, MessageSquare, Wrench,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -249,6 +249,8 @@ function SocietyDashboardContent() {
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
+          ...(isAdmin ? [{ label: "Join Requests", href: `/society/join-requests?societyId=${society!.id}`, icon: UserPlus }] : []),
+          ...(isAdmin ? [{ label: "Service Providers", href: `/society/services?societyId=${society!.id}`, icon: Wrench }] : []),
           { label: "Manage Members", href: `/society/members?societyId=${society!.id}`, icon: Users },
           { label: "Voting & Proposals", href: `/society/voting?societyId=${society!.id}`, icon: Vote },
           { label: "View Funds", href: `/society/funds?societyId=${society!.id}`, icon: DollarSign },

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { getSession } from "@/lib/auth-helpers";
 
 // GET - Fetch users
 export async function GET(req: NextRequest) {
@@ -18,6 +19,8 @@ export async function GET(req: NextRequest) {
           bio: true,
           phone: true,
           location: true,
+          address: true,
+          cnic: true,
           skills: true,
           role: true,
           verified: true,
@@ -25,6 +28,10 @@ export async function GET(req: NextRequest) {
           wallets: true,
           societyMemberships: {
             include: { society: { select: { id: true, name: true, type: true, cityName: true, countryName: true } } },
+          },
+          societyJoinRequests: {
+            where: { status: "PENDING" },
+            select: { societyId: true },
           },
           teamMemberships: { include: { team: { select: { id: true, name: true } } } },
           businesses: true,
@@ -62,14 +69,20 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// PATCH - Update user (own profile: name, bio, phone, location, skills)
+// PATCH - Update user (own profile: name, bio, phone, location, address, cnic, skills)
 export async function PATCH(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { id, name, bio, phone, location, skills } = body;
+    const session = await getSession();
+    const currentId = (session?.user as { id?: string })?.id;
+    if (!currentId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    if (!id) {
-      return NextResponse.json({ error: "User ID required" }, { status: 400 });
+    const body = await req.json();
+    const { id, name, bio, phone, location, address, cnic, skills } = body;
+
+    if (!id || id !== currentId) {
+      return NextResponse.json({ error: "Can only update own profile" }, { status: 403 });
     }
 
     const data: Record<string, unknown> = {};
@@ -77,6 +90,8 @@ export async function PATCH(req: NextRequest) {
     if (typeof bio === "string") data.bio = bio.trim() || null;
     if (typeof phone === "string") data.phone = phone.trim() || null;
     if (typeof location === "string") data.location = location.trim() || null;
+    if (typeof address === "string") data.address = address.trim() || null;
+    if (typeof cnic === "string") data.cnic = cnic.trim() || null;
     if (Array.isArray(skills)) data.skills = JSON.stringify(skills.filter((s: unknown) => typeof s === "string" && s.trim()));
 
     const user = await prisma.user.update({
@@ -90,6 +105,8 @@ export async function PATCH(req: NextRequest) {
         bio: true,
         phone: true,
         location: true,
+        address: true,
+        cnic: true,
         skills: true,
         role: true,
       },

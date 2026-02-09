@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Building2, MapPin, Users, Vote, DollarSign, Search } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { MapPin, Users, Vote, DollarSign, Search, UserPlus, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,9 +23,13 @@ interface Society {
 }
 
 export default function BrowseSocietiesPage() {
+  const { data: session, status } = useSession();
   const [societies, setSocieties] = useState<Society[]>([]);
   const [loading, setLoading] = useState(true);
   const [cityFilter, setCityFilter] = useState("");
+  const [memberIds, setMemberIds] = useState<Set<string>>(new Set());
+  const [pendingIds, setPendingIds] = useState<Set<string>>(new Set());
+  const [requestingId, setRequestingId] = useState<string | null>(null);
 
   useEffect(() => {
     const url = cityFilter ? `/api/societies?city=${encodeURIComponent(cityFilter)}` : "/api/societies";
@@ -33,6 +38,43 @@ export default function BrowseSocietiesPage() {
       .then((data) => setSocieties(data.societies || []))
       .finally(() => setLoading(false));
   }, [cityFilter]);
+
+  const userId = (session?.user as { id?: string })?.id;
+  useEffect(() => {
+    if (status !== "authenticated" || !userId) return;
+    fetch(`/api/users?id=${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) {
+          const memberships = data.user.societyMemberships || [];
+          const requests = data.user.societyJoinRequests || [];
+          setMemberIds(new Set(memberships.map((m: { society: { id: string } }) => m.society.id)));
+          setPendingIds(new Set(requests.map((r: { societyId: string }) => r.societyId)));
+        }
+      })
+      .catch(() => {});
+  }, [userId, status]);
+
+  const handleRequestJoin = async (societyId: string) => {
+    setRequestingId(societyId);
+    try {
+      const res = await fetch(`/api/societies/${societyId}/join-request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ societyId, message: "" }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setPendingIds((prev) => new Set(prev).add(societyId));
+      } else {
+        alert(data.error || "Request failed");
+      }
+    } catch {
+      alert("Request failed");
+    } finally {
+      setRequestingId(null);
+    }
+  };
 
   const byCity = societies.reduce((acc, s) => {
     const key = `${s.cityName}, ${s.countryName}`;
@@ -87,9 +129,29 @@ export default function BrowseSocietiesPage() {
                         <span className="flex items-center gap-1"><DollarSign className="w-3 h-3" />${society.fundsBalance.toLocaleString()}</span>
                       </div>
                       <p className="text-xs text-muted-foreground">Admin: {society.admin.name}</p>
-                      <Link href={`/society?societyId=${society.id}`} className="inline-block mt-3">
-                        <Button size="sm" variant="outline">View Dashboard</Button>
-                      </Link>
+                      <div className="mt-3 flex gap-2">
+                        {memberIds.has(society.id) ? (
+                          <Link href={`/society?societyId=${society.id}`}>
+                            <Button size="sm" variant="outline">View Dashboard</Button>
+                          </Link>
+                        ) : pendingIds.has(society.id) ? (
+                          <Button size="sm" variant="secondary" disabled>Pending approval</Button>
+                        ) : status === "authenticated" ? (
+                          <Button
+                            size="sm"
+                            variant="default"
+                            onClick={() => handleRequestJoin(society.id)}
+                            disabled={requestingId === society.id}
+                          >
+                            {requestingId === society.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                            {requestingId === society.id ? "Requesting..." : "Request to join"}
+                          </Button>
+                        ) : (
+                          <Link href="/login">
+                            <Button size="sm">Sign in to join</Button>
+                          </Link>
+                        )}
+                      </div>
                     </CardContent>
                   </Card>
                 ))}

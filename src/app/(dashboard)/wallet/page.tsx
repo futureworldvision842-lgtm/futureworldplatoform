@@ -25,12 +25,20 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
 const demoTransactions = [
-  { id: "1", type: "RECEIVED", from: "Society Fund", amount: 500, hash: "0x1a2b3c...4d5e", time: "2h ago", verified: true },
-  { id: "2", type: "SENT", to: "Community Project", amount: 200, hash: "0x5f6g7h...8i9j", time: "5h ago", verified: true },
-  { id: "3", type: "DONATION", to: "Earthquake Relief", amount: 100, hash: "0x2k3l4m...5n6o", time: "1d ago", verified: true },
-  { id: "4", type: "RECEIVED", from: "Service Payment", amount: 350, hash: "0x7p8q9r...0s1t", time: "2d ago", verified: true },
-  { id: "5", type: "SENT", to: "Education Fund", amount: 150, hash: "0x3u4v5w...6x7y", time: "3d ago", verified: true },
-  { id: "6", type: "RECEIVED", from: "Monthly Salary", amount: 2000, hash: "0x8z9a0b...1c2d", time: "5d ago", verified: true },
+  { id: "1", type: "RECEIVED", from: "Society Fund", amount: 500, hash: "0x1a2b3c...4d5e", time: "2h ago", verified: true, level: "SOCIETY" },
+  { id: "2", type: "SENT", to: "Community Project", amount: 200, hash: "0x5f6g7h...8i9j", time: "5h ago", verified: true, level: "SOCIETY" },
+  { id: "3", type: "DONATION", to: "Earthquake Relief", amount: 100, hash: "0x2k3l4m...5n6o", time: "1d ago", verified: true, level: "GLOBAL" },
+  { id: "4", type: "RECEIVED", from: "Service Payment", amount: 350, hash: "0x7p8q9r...0s1t", time: "2d ago", verified: true, level: null },
+  { id: "5", type: "SENT", to: "Education Fund", amount: 150, hash: "0x3u4v5w...6x7y", time: "3d ago", verified: true, level: "CITY" },
+  { id: "6", type: "RECEIVED", from: "Monthly Salary", amount: 2000, hash: "0x8z9a0b...1c2d", time: "5d ago", verified: true, level: null },
+];
+
+const hierarchyBranches = [
+  { label: "Personal", type: "PERSONAL", balance: "3,400", desc: "Your main account" },
+  { label: "Society branch", type: "SOCIETY", balance: "—", desc: "Society treasury (when member)" },
+  { label: "City branch", type: "CITY", balance: "—", desc: "City-level ledger" },
+  { label: "Country branch", type: "COUNTRY", balance: "—", desc: "National level" },
+  { label: "Global branch", type: "GLOBAL", balance: "—", desc: "International" },
 ];
 
 export default function WalletPage() {
@@ -56,6 +64,28 @@ export default function WalletPage() {
                 Wallet ID: 0xGAIGS... (linked to your profile). All transactions below are verified on-chain.
               </p>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Hierarchy: Personal → Society → City → Country → Global */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Account hierarchy</CardTitle>
+          <CardDescription>Personal account plus branch levels (Society, City, Country, Global). All flows are transparent and ledger-visible at each level.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-3">
+            {hierarchyBranches.map((b) => (
+              <div key={b.type} className="flex items-center gap-3 p-3 rounded-lg border bg-card min-w-[140px]">
+                <CreditCard className="w-5 h-5 text-muted-foreground" />
+                <div>
+                  <p className="font-medium text-sm">{b.label}</p>
+                  <p className="text-xs text-muted-foreground">{b.desc}</p>
+                  {b.balance !== "—" && <p className="text-xs font-mono text-primary">${b.balance}</p>}
+                </div>
+              </div>
+            ))}
           </div>
         </CardContent>
       </Card>
@@ -172,8 +202,11 @@ export default function WalletPage() {
                     <p className="font-medium text-sm">
                       {tx.type === "RECEIVED" ? `From: ${tx.from}` : `To: ${tx.to}`}
                     </p>
-                    <div className="flex items-center gap-2 mt-0.5">
+                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                       <code className="text-xs text-muted-foreground font-mono">{tx.hash}</code>
+                      {tx.level && (
+                        <Badge variant="secondary" className="text-[10px]">{tx.level}</Badge>
+                      )}
                       <Copy className="w-3 h-3 text-muted-foreground cursor-pointer hover:text-foreground" />
                     </div>
                   </div>

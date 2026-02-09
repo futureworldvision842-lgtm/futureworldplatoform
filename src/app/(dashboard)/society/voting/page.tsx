@@ -1,6 +1,7 @@
 "use client";
 
-import { Plus, Brain, Shield } from "lucide-react";
+import { useState } from "react";
+import { Plus, Brain, Shield, Lightbulb, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +20,30 @@ const proposals = [
 function SocietyVotingContent() {
   const searchParams = useSearchParams();
   const societyId = searchParams.get("societyId");
+  const [suggestionsFor, setSuggestionsFor] = useState<string | null>(null);
+  const [suggestionsText, setSuggestionsText] = useState<string | null>(null);
+  const [suggestLoading, setSuggestLoading] = useState(false);
+
+  const fetchSuggestions = async (title: string, desc: string) => {
+    const key = `${title}`;
+    if (suggestionsFor === key && suggestionsText) return;
+    setSuggestionsFor(key);
+    setSuggestLoading(true);
+    setSuggestionsText(null);
+    try {
+      const res = await fetch("/api/ai/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ problem: `${title}. ${desc}` }),
+      });
+      const data = await res.json();
+      setSuggestionsText(data.suggestions || "No suggestions.");
+    } catch {
+      setSuggestionsText("Failed to load suggestions.");
+    } finally {
+      setSuggestLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -38,6 +63,8 @@ function SocietyVotingContent() {
         {proposals.map((p) => {
           const totalVotes = p.yes + p.no + p.abstain;
           const yesPercent = Math.round((p.yes / totalVotes) * 100);
+          const showSuggestions = suggestionsFor === p.title;
+          const loading = suggestLoading && suggestionsFor === p.title;
           return (
             <Card key={p.title}>
               <CardContent className="p-6">
@@ -65,6 +92,20 @@ function SocietyVotingContent() {
                     <span><Shield className="w-3 h-3 inline mr-1" />Blockchain verified</span>
                     <span>{totalVotes}/{p.total} voted • {p.days > 0 ? `${p.days} days left` : "Completed"}</span>
                   </div>
+                </div>
+                <div className="mt-4 pt-4 border-t">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fetchSuggestions(p.title, p.desc)}
+                    disabled={loading}
+                  >
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Lightbulb className="w-4 h-4 mr-2 text-amber-500" />}
+                    Get AI suggestions for this proposal
+                  </Button>
+                  {showSuggestions && suggestionsText && (
+                    <div className="mt-3 p-3 rounded-lg bg-muted text-sm whitespace-pre-wrap">{suggestionsText}</div>
+                  )}
                 </div>
               </CardContent>
             </Card>

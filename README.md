@@ -1,8 +1,8 @@
-# Future World Platform – Global AI Governance System
+# Future World Platform – Global AI Governance System (G.A.I.G.S.)
 
 **By Muhammad Qureshi**
 
-A governance platform combining blockchain-style transparency, AI (Gemini), and democratic tools: societies, voting, funds, discussions, teams, and role-based dashboards (Society, City, Country, Global, Super Admin).
+A governance platform combining blockchain-style transparency, AI (Gemini), and democratic tools: societies, voting, funds, discussions, teams, and role-based dashboards (Society, City, Country, Global, Super Admin). Full upgrade (Phases 0–7) implemented: join requests, wallet hierarchy, service provider approval, disaster & relief, AI suggestions, game coming soon.
 
 ## Tech
 
@@ -21,7 +21,11 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).  
-Set `NEXTAUTH_SECRET`, `DATABASE_URL` (Postgres/Neon URL), and `GEMINI_API_KEY` in `.env.local` if needed.
+**Prisma needs `.env`** (not only `.env.local`) with `DATABASE_URL=postgresql://...`. See [LOCAL-SETUP.md](LOCAL-SETUP.md). Set `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, and optionally `GEMINI_API_KEY`.
+
+## Launch (finalize and go live)
+
+**Full plan implemented.** → **[LAUNCH.md](LAUNCH.md)** for the complete launch checklist (local → GitHub → Netlify → test).
 
 ## Deploy (GitHub → Netlify 100%)
 

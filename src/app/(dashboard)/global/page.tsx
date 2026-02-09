@@ -76,6 +76,22 @@ export default function GlobalDashboard() {
           </CardContent>
         </Card>
 
+        {/* Disaster & Relief — AI-triggered transparent campaigns */}
+        <Card className="border-amber-200 bg-amber-50/50">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-600" />
+              <CardTitle className="text-lg">Disaster & Relief</CardTitle>
+            </div>
+            <CardDescription>
+              When disasters strike, G.A.I.G.S. can trigger global alerts and create transparent relief campaigns. All donations are tracked on-chain so every dollar is accountable. Admins and AI can launch campaigns for earthquakes, floods, and other emergencies.
+            </CardDescription>
+            <Link href="/global/donations">
+              <span className="text-sm font-medium text-primary hover:underline">View donation campaigns →</span>
+            </Link>
+          </CardHeader>
+        </Card>
+
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">

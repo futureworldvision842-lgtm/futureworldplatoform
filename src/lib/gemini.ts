@@ -84,6 +84,23 @@ Provide a clear, actionable report.`;
   }
 }
 
+/** Suggest solutions for a governance/problem description. Returns bullet points. */
+export async function suggestSolutions(problemText: string): Promise<string> {
+  try {
+    const prompt = `As the G.A.I.G.S. AI Advisor, suggest clear, actionable solutions for this governance or community problem. Keep each suggestion concise (1-2 sentences). Use bullet points.
+
+Problem: ${problemText}
+
+Provide 3-5 practical solutions that align with transparency, democracy, and community welfare.`;
+
+    const result = await geminiModel.generateContent(prompt);
+    return result.response.text();
+  } catch (error) {
+    console.error("Suggest Solutions Error:", error);
+    return "Unable to generate suggestions at this time. Please try again.";
+  }
+}
+
 export async function generateInsights(data: {
   type: string;
   metrics: Record<string, number>;
